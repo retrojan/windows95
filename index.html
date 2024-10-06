@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Windows XP Simulator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    
+    <div id="boot-screen">
+        <div id="loading-spinner"></div>
+    </div>
+
+    <div id="desktop">
+        <!-- Иконка Firefox -->
+        <div class="icon" id="firefox-icon" style="top: 100px; left: 100px;">
+            <img src="firefox.ico" alt="Firefox">
+            <div class="icon-label">Mozilla Firefox</div>
+        </div>
+
+        <!-- Иконка Проводника -->
+        <div class="icon" id="explorer-icon" style="top: 100px; left: 200px;">
+            <img src="explorer.ico" alt="Explorer">
+            <div class="icon-label">Проводник</div>
+        </div>
+
+        <!-- Панель задач -->
+        <div id="taskbar">
+            <div id="start-button">Пуск</div>
+            <div id="taskbar-windows"></div>
+            <div id="clock">12:00 PM</div>
+        </div>
+
+        <!-- Меню "Пуск" -->
+        <div id="start-menu">
+            <div id="control-panel">Панель управления</div>
+            <div id="explorer-menu">Проводник</div>
+            <div id="command-prompt">Командная строка</div>
+            <div id="search">Поиск</div>
+            <div id="user">Пользователь</div>
+        </div>
+
+        <!-- Окно Firefox -->
+        <div class="window firefox" id="firefox-window" style="display: none;">
+            <div class="window-header">
+                <span class="title">Mozilla Firefox</span>
+                <div class="window-controls">
+                    <button class="minimize-window">_</button>
+                    <button class="maximize-window">🗖</button>
+                    <button class="close-window">X</button>
+                </div>
+            </div>
+            <input type="text" class="url-bar" id="url-input" value="changelogs.html">
+            <div class="window-body">
+                <iframe id="iframe" src="changelogs.html" frameborder="0"></iframe>
+            </div>
+
+            </div>
+        <!-- Окно Проводника -->
+        <div class="window explorer" id="explorer-window">
+            <div class="window-header">
+                <span class="title">Проводник</span>
+                <div class="window-controls">
+                    <button class="minimize-window">_</button>
+                    <button class="maximize-window">🗖</button>
+                    <button class="close-window">X</button>
+                </div>
+            </div>
+            <div class="window-body explorer-body">
+                <div class="file">Документы</div>
+                <div class="file">Музыка</div>
+                <div class="file">Изображения</div>
+                <div class="file">Видеозаписи</div>
+                <div class="file">Загрузки</div>
+            </div>
+        </div>
+        <!-- Окно Загрузок -->
+        <div class="window downloads" id="downloads-window" style="display: none;">
+            <div class="window-header">
+                <span class="title">Загрузки</span>
+                <div class="window-controls">
+                    <button class="minimize-window">_</button>
+                    <button class="maximize-window">🗖</button>
+                    <button class="close-window">X</button>
+                </div>
+            </div>
+            <div class="window-body explorer-body">
+                <div class="file">minecraft.exe</div>
+            </div>
+        </div>
+        <!-- Окно Панели управления -->
+        <div class="window control-panel" id="control-panel-window">
+            <div class="window-header">
+                <span class="title">Панель управления</span>
+                <div class="window-controls">
+                    <button class="minimize-window">_</button>
+                    <button class="maximize-window">🗖</button>
+                    <button class="close-window">X</button>
+                </div>
+            </div>
+            <div class="window-body explorer-body">
+                <div class="file">Система</div>
+                <div class="file">Устройства</div>
+                <div class="file">Сеть</div>
+                <div class="file">Программы</div>
+            </div>
+        </div>
+
+<!-- Командная строка -->
+<div id="command-line" class="window">
+    <div class="window-header command-line-header"> <!-- Добавлен класс для заголовка -->
+        <span class="title">Командная строка</span>
+        <div class="window-controls command-line-controls"> <!-- Добавлен класс для кнопок -->
+            <button class="close-window">X</button>
+        </div>
+    </div>
+    <div>Командная строка (введите команду)</div>
+    <input type="text" id="command-input" style="width: 100%; color: #0f0; background-color: #000;">
+    <div id="command-output"></div>
+</div>
+
+
+
+
+<div id="damage-report" style="display:none; position:absolute; top:10px; left:10px; color: white; background: rgba(0, 0, 0, 0.7); padding: 10px; border-radius: 5px; z-index: 3000;"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>

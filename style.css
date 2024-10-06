@@ -1,0 +1,374 @@
+body {
+    margin: 0;
+    font-family: 'Tahoma', sans-serif;
+    background-color: #008080; /* Цвет рабочего стола Windows XP */
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+}
+
+#desktop {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+#taskbar {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background-color: #C0C0C0;
+    height: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+    z-index: 1000; /* Поднимаем панель задач над окнами */
+}
+
+#start-button {
+    background-color: #000080;
+    color: white;
+    padding: 0 15px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative; /* Добавлено для позиционирования меню "Пуск" */
+}
+
+#start-menu {
+    display: none;
+    position: absolute;
+    bottom: 40px; /* Расположение меню "Пуск" над панелью задач */
+    left: 0;
+    background-color: #C0C0C0;
+    border: 1px solid #000;
+    width: 150px;
+    z-index: 1001; /* Поднимаем меню над окнами */
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+#start-menu div {
+    padding: 5px;
+    cursor: pointer;
+}
+
+#start-menu div:hover {
+    background-color: #a0a0a0; /* Подсветка при наведении */
+}
+
+#clock {
+    padding-right: 15px;
+}
+
+#taskbar-windows {
+    display: flex;
+    align-items: center;
+    margin-left: auto; /* Сдвигаем вкладки вправо */
+}
+
+.window {
+    position: absolute;
+    top: 50px;
+    left: 50px;
+    width: 800px;
+    height: 600px;
+    border: 2px solid #000;
+    background-color: #fff;
+    display: none;
+    resize: both;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.window-header {
+    background-color: #000080;
+    color: white;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    cursor: move;
+    position: relative;
+}
+
+.window-header .title {
+    flex-grow: 1;
+    padding-left: 10px;
+}
+
+.window-controls {
+    display: flex;
+}
+
+.window-controls button {
+    width: 30px;
+    height: 25px;
+    background-color: #000080;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.window-controls button:hover {
+    background-color: #5555ff;
+}
+
+.window-body {
+    width: 100%;
+    height: calc(100% - 35px); /* Учитываем высоту заголовка */
+    padding: 0;
+    margin: 0;
+}
+
+.window iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.icon {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    color: white;
+}
+
+.icon img {
+    width: 48px;
+    height: 48px;
+}
+
+.icon-label {
+    text-align: center;
+    margin-top: 5px;
+    width: 80px;
+    word-wrap: break-word;
+}
+
+.url-bar {
+    width: calc(100% - 70px);
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin: 5px;
+}
+
+/* Стиль для Проводника */
+.explorer-body {
+    padding: 10px;
+}
+
+.file {
+    margin: 5px 0;
+    cursor: pointer;
+    color: #000;
+}
+
+/* Стиль для командной строки */
+#command-line {
+    position: absolute;
+    top: 100px;
+    left: 50px;
+    width: 400px;
+    height: 200px;
+    background-color: #000;
+    color: #0f0;
+    padding: 10px;
+    display: none;
+    z-index: 2000; /* Вверху остальных окон */
+    #boot-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #008080; /* Цвет фона загрузочного экрана */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000; /* Над всеми элементами */
+}
+
+#loading-spinner {
+    border: 8px solid #f3f3f3; /* Цвет фона загрузчика */
+    border-top: 8px solid #3498db; /* Цвет вращающегося верхнего круга */
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+#desktop {
+    display: none; /* Скрываем рабочий стол до завершения загрузки */
+}
+}
+/* Стиль для заголовка окна */
+.window-header {
+background-color: #000080; /* Цвет фона заголовка */
+color: white; /* Цвет текста заголовка */
+padding: 5px; /* Внутренние отступы */
+display: flex; /* Используем flexbox для размещения элементов */
+align-items: center; /* Выравнивание по вертикали */
+cursor: move; /* Курсор в виде руки при наведении */
+position: relative; /* Позиционирование относительно родителя */
+}
+
+/* Кнопки управления окнами в заголовке */
+.window-controls {
+display: flex; /* Размещаем кнопки в одну линию */
+}
+
+/* Стиль для кнопок управления */
+.window-controls button {
+width: 30px; /* Ширина кнопок */
+height: 25px; /* Высота кнопок */
+background-color: #000080; /* Цвет фона кнопок */
+color: white; /* Цвет текста кнопок */
+border: none; /* Убираем рамку */
+cursor: pointer; /* Курсор в виде руки при наведении */
+font-weight: bold; /* Жирный шрифт */
+}
+
+/* Эффект наведения на кнопки */
+.window-controls button:hover {
+background-color: #5555ff; /* Цвет при наведении */
+}
+
+/* Заголовок командной строки */
+#command-line {
+position: absolute; /* Позиция над другими элементами */
+top: 100px; /* Отступ сверху */
+left: 50px; /* Отступ слева */
+width: 400px; /* Ширина окна */
+height: 200px; /* Высота окна */
+background-color: #000; /* Цвет фона окна */
+color: #0f0; /* Цвет текста окна */
+padding: 10px; /* Внутренние отступы */
+display: none; /* Скрыто по умолчанию */
+z-index: 2000; /* Над другими окнами */
+}
+
+/* Стиль для поля ввода команды */
+#command-input {
+width: 100%; /* Полная ширина */
+color: #0f0; /* Цвет текста */
+background-color: #000; /* Цвет фона */
+}
+
+/* Стиль для заголовка окна командной строки */
+.command-line-header {
+background-color: #000000; /* Цвет фона заголовка командной строки (синий) */
+color: white; /* Цвет текста заголовка */
+padding: 5px; /* Внутренние отступы */
+display: flex; /* Используем flexbox для размещения элементов */
+align-items: center; /* Выравнивание по вертикали */
+cursor: move; /* Курсор в виде руки при наведении */
+position: relative; /* Позиционирование относительно родителя */
+}
+
+/* Кнопки управления окнами в заголовке командной строки */
+.command-line-controls {
+display: flex; /* Размещаем кнопки в одну линию */
+}
+
+/* Стиль для кнопок управления */
+.command-line-controls button {
+width: 30px; /* Ширина кнопок */
+height: 25px; /* Высота кнопок */
+background-color: #000000; /* Цвет фона кнопок */
+color: white; /* Цвет текста кнопок */
+border: none; /* Убираем рамку */
+cursor: pointer; /* Курсор в виде руки при наведении */
+font-weight: bold; /* Жирный шрифт */
+}
+
+/* Эффект наведения на кнопки */
+.command-line-controls button:hover {
+background-color: #252525; /* Цвет при наведении (темнее синий) */
+}
+
+/* Заголовок командной строки */
+#command-line {
+position: absolute; /* Позиция над другими элементами */
+top: 100px; /* Отступ сверху */
+left: 50px; /* Отступ слева */
+width: 400px; /* Ширина окна */
+height: 200px; /* Высота окна */
+background-color: #000; /* Цвет фона окна */
+color: #0f0; /* Цвет текста окна */
+padding: 10px; /* Внутренние отступы */
+display: none; /* Скрыто по умолчанию */
+z-index: 2000; /* Над другими окнами */
+}
+
+/* Стиль для поля ввода команды */
+#command-input {
+width: 100%; /* Полная ширина */
+color: #0f0; /* Цвет текста */
+background-color: #000; /* Цвет фона */
+}
+.explorer-body {
+    padding: 10px;
+}
+
+.file {
+    margin: 5px 0;
+    cursor: pointer;
+    color: #000;
+}
+.file {
+    padding: 10px;
+    border: 1px solid #444;
+    margin: 5px 0;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.file:hover {
+    background-color: #444;
+}
+.pc-info-window {
+    width: 300px;
+    background-color: #C0C0C0;
+    border: 2px solid #000;
+    position: absolute;
+    top: 100px;
+    left: 100px;
+    z-index: 10;
+    border-radius: 8px;
+    font-family: 'Tahoma';
+    color: #000;
+}
+
+.window-header {
+    background-color: #000080;
+    color: white;
+    padding: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.window-content {
+    padding: 10px;
+}
+
+button {
+    background-color: #FF0000;
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+}
+
+button:hover {
+    background-color: #FF5555;
+}

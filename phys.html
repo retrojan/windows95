@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics Engine</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #1a1a1a; /* Тёмный фон страницы */
+            color: white; /* Цвет текста */
+        }
+        canvas {
+            border: 1px solid #444; /* Тёмная рамка для холста */
+            background-color: #333; /* Тёмный фон холста */
+            display: block; /* Убирает пробелы под холстом */
+            position: absolute; /* Позволяет позиционировать элемент без учета других элементов */
+            top: 0;
+            left: 0;
+            width: 100vw; /* 100% ширины окна */
+            height: 100vh; /* 100% высоты окна */
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Функция обновления размеров холста
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;  // Устанавливаем ширину
+            canvas.height = window.innerHeight; // Устанавливаем высоту
+        }
+
+        // Обработка изменения размера окна
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas(); // Устанавливаем размеры в начале
+
+        // Звук отскока
+        const bounceSound = new Audio('bounce.mp3'); // Замените 'bounce.mp3' на путь к вашему файлу
+
+        // Параметры физики
+        const gravity = 0.05;   // Замедленная гравитация
+        const friction = 0.99;  // Трение для горизонтальной скорости
+        const bounceFactorMouse = 0.8;  // Коэффициент упругости для мыши
+        const bounceFactorKey = 0.5; // Коэффициент упругости для клавиши 'x'
+        const groundFriction = 0.96; // Трение о землю для замедления
+
+        // Объект
+        const ball = {
+            x: canvas.width / 2,
+            y: canvas.height / 2,
+            radius: 30,
+            vx: 0,  // Скорость по оси X
+            vy: 0,  // Скорость по оси Y
+            color: 'deepskyblue',
+        };
+
+        let isDragging = false; // Флаг для проверки, перетаскиваем ли мы шар
+        let isKeyPressed = false; // Флаг для проверки, нажата ли клавиша 'x'
+        const mousePosition = { x: 0, y: 0 };
+
+        // Функция обновления положения объекта
+        function update() {
+            // Если шар перетаскивается с помощью мыши
+            if (isDragging) {
+                // Устанавливаем позицию мяча равной позиции курсора
+                ball.x = mousePosition.x;
+                ball.y = mousePosition.y;
+            }
+
+            // Если 'X' нажата, обновляем позицию шара с учетом физики
+            if (isKeyPressed) {
+                const dist = Math.sqrt((mousePosition.x - ball.x) ** 2 + (mousePosition.y - ball.y) ** 2);
+
+                // Проверяем, прикоснулся ли мяч к курсору
+                if (dist <= ball.radius) {
+                    const angle = Math.atan2(ball.y - mousePosition.y, ball.x - mousePosition.x);
+                    const force = 15; // Сила отскока для клавиши 'x'
+                    ball.vx += Math.cos(angle) * force; // Обновляем скорость по X
+                    ball.vy += Math.sin(angle) * force; // Обновляем скорость по Y
+                    bounceSound.currentTime = 0; // Сбрасываем время воспроизведения
+                    bounceSound.play(); // Проигрываем звук
+                }
+            } else {
+                const dist = Math.sqrt((mousePosition.x - ball.x) ** 2 + (mousePosition.y - ball.y) ** 2);
+
+                // Проверяем, прикоснулся ли мяч к курсору
+                if (dist <= ball.radius) {
+                    const angle = Math.atan2(ball.y - mousePosition.y, ball.x - mousePosition.x);
+                    const force = 5; // Сила отскока для левой кнопки мыши
+                    ball.vx += Math.cos(angle) * force; // Обновляем скорость по X
+                    ball.vy += Math.sin(angle) * force; // Обновляем скорость по Y
+                    bounceSound.currentTime = 0; // Сбрасываем время воспроизведения
+                    bounceSound.play(); // Проигрываем звук
+                }
+            }
+
+            // Обновляем скорость с учётом гравитации
+            ball.vy += gravity;
+
+            // Обновляем положение с учётом скорости
+            ball.x += ball.vx;
+            ball.y += ball.vy;
+
+            // Столкновение с границами экрана
+            if (ball.x + ball.radius > canvas.width) {
+                ball.x = canvas.width - ball.radius;  // Останавливаем у правой границы
+                ball.vx *= -bounceFactorMouse;  // Меняем направление скорости и уменьшаем её
+                bounceSound.currentTime = 0; // Сбрасываем время воспроизведения
+                bounceSound.play(); // Проигрываем звук
+            }
+            if (ball.x - ball.radius < 0) {
+                ball.x = ball.radius;  // Останавливаем у левой границы
+                ball.vx *= -bounceFactorMouse;  // Меняем направление скорости и уменьшаем её
+                bounceSound.currentTime = 0; // Сбрасываем время воспроизведения
+                bounceSound.play(); // Проигрываем звук
+            }
+            if (ball.y + ball.radius > canvas.height) {
+                ball.y = canvas.height - ball.radius;  // Останавливаем у нижней границы
+                ball.vy *= -bounceFactorMouse;  // Меняем направление скорости по оси Y
+                ball.vy *= groundFriction;  // Трение о землю
+                ball.vx *= groundFriction;  // Горизонтальное замедление на земле
+                bounceSound.currentTime = 0; // Сбрасываем время воспроизведения
+                bounceSound.play(); // Проигрываем звук
+            }
+            if (ball.y - ball.radius < 0) {
+                ball.y = ball.radius;  // Останавливаем у верхней границы
+                ball.vy *= -bounceFactorMouse;  // Меняем направление скорости по оси Y
+                bounceSound.currentTime = 0; // Сбрасываем время воспроизведения
+                bounceSound.play(); // Проигрываем звук
+            }
+
+            // Трение замедляет горизонтальное движение
+            ball.vx *= friction;
+        }
+
+        // Функция рисования объекта
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);  // Очищаем холст
+            ctx.beginPath();
+            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+            ctx.fillStyle = ball.color;
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        // Обработчики мыши
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            mousePosition.x = e.clientX - rect.left;
+            mousePosition.y = e.clientY - rect.top;
+        });
+
+        canvas.addEventListener('mousedown', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+            const dist = Math.sqrt((mouseX - ball.x) ** 2 + (mouseY - ball.y) ** 2);
+
+            // Если нажата левая кнопка мыши и курсор над шаром
+            if (e.button === 0 && dist <= ball.radius) {
+                isDragging = true;
+            }
+        });
+
+        canvas.addEventListener('mouseup', () => {
+            isDragging = false; // Останавливаем перетаскивание
+        });
+
+        // Обработчик клавиш
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'x') { // Проверяем, что нажата клавиша 'x'
+                isKeyPressed = true;
+            }
+        });
+
+        document.addEventListener('keyup', (e) => {
+            if (e.key === 'x') { // Проверяем, что отпущена клавиша 'x'
+                isKeyPressed = false;
+            }
+        });
+
+        // Основной цикл анимации
+        function loop() {
+            update();
+            draw();
+            requestAnimationFrame(loop);  // Обновляем анимацию
+        }
+
+        // Запускаем цикл
+        loop();
+    </script>
+</body>
+</html>
